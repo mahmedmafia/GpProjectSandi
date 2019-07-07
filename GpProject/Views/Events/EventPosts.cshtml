@@ -1,0 +1,74 @@
+﻿@model GpProject.ViewModels.EventPostsViewModel
+
+<style>
+    .posts div {
+        width: 100%;
+        margin: 20px auto;
+        /*background-color: #fff;*/
+        overflow: hidden;
+        padding: 20px;
+        border-radius: 3px;
+        box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+        min-height: 50px;
+    }
+
+    section div textarea {
+        width: 400px;
+        min-height: 100px;
+        border: none;
+        padding: 5px 10px;
+        font-family: arial;
+        resize: none;
+        outline: none;
+        border-bottom: 2px solid #0077CC;
+    }
+    section{
+        background:#eee;
+    }
+    div.post{
+        margin:10px 0px;
+        padding:10px;
+    }
+    .notpost {
+        background-color:rgb(45, 45, 44);
+        color: white;
+        text-align: center;
+        font-size: 2em;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        height: 10%;
+    }
+</style>
+<div class="text" >
+    <img src="http://placehold.it/100/100" />
+    <textarea placeholder="What's in your mind" >
+
+</textarea>
+    <input type="submit" value="post" />
+</div>
+
+@if (Model.Posts.Count != 0)
+{
+
+
+    foreach (var item in Model.Posts)
+    {
+        <div class="post">
+            <p>@item.Person.FirstName</p>
+            <p>@item.Content</p>
+            <p>@item.DatePosted</p>
+        </div>
+    }
+    <div class="notpost">
+        <p>No More Posts</p>
+    </div>
+}
+else
+{
+    <div class="notpost">
+        <p>No Posts Yet Be The First One To Add Post</p>
+    </div>
+
+}
+
+

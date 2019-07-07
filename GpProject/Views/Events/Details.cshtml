@@ -1,0 +1,139 @@
+﻿@model GpProject.ViewModels.EventPostsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+@functions
+{
+    public bool isOwner(int OwnerId)
+    {
+        if (OwnerId != Model.Person.Id)
+        {
+            return false;
+        }
+        return true;
+    }
+    public string isJoined(int Eventid)
+    {
+        //Get Event Id and Check if User is Joined
+        return (Model.UserJoin.IsUserJoined(Model.Person, Model.Event, Eventid)) ? "Join" : "UnJoin";
+
+    }
+
+}
+
+
+@*Header of Event *@
+<div class=" event_header">
+    <div class="split bg-blue"></div>
+    <div class="split SideDetails">
+        @*Tabs*@
+        <ul class="nav nav-pills" id="tabs">
+            <li class="active btn btn-default" data-tab-content="tab1">About</li>
+            <li class=" btn btn-default" data-tab-content="tab2">Details</li>
+            <li class=" btn btn-default" data-tab-content="tab3" id="@Model.Event.Id">Users</li>
+        </ul>
+        @*Tab Contents*@
+        <div class="tab-container">
+            <div class="tab-content active" data-tab-content="tab1">
+
+                <div class="event-content">
+                    <h3 class="split event-label">
+                        @Html.DisplayNameFor(model => model.Event.Name)
+                    </h3>
+                    <p class="split event-detail">
+                        @Html.DisplayFor(model => model.Event.Name)
+
+                    </p>
+                </div>
+                <div class="event-content">
+                    <h3 class="split event-label">
+                        Owner
+                    </h3>
+                    <p class="split event-detail">
+                        @Html.ActionLink(Model.Event.Owner.FirstName, "Details", "User", new { id = Model.Event.Owner.Id }, new { @class = "btn btn-link user-link" })
+
+                    </p>
+                </div>
+                <div class="event-content">
+                    <h3 class="split event-label">
+                        @Html.DisplayNameFor(model => model.Event.DayStart)
+                    </h3>
+                    <p class="split event-detail">
+                        <span class="eventspan">
+                            @(Model.Event.DayStart == null ? "" : ((DateTime)Model.Event.DayStart).ToString("d MMM "))
+                            @Html.DisplayFor(Model => Model.Event.TimeStart)
+                        </span>
+                    </p>
+                </div>
+                <div class="event-content">
+                    <h3 class="split event-label">
+                        @Html.DisplayNameFor(model => model.Event.Location)
+                    </h3>
+                    <p class="split event-detail">
+                        @Html.DisplayFor(model => model.Event.Location)
+
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="tab-content" data-tab-content="tab2">
+                <div class="desc">
+                    <h3 class="desc-header">
+                        @Html.DisplayNameFor(model => model.Event.Description)
+                    </h3>
+                    <div class="desc-body">
+                        <div class="desc-content" style="">
+                            <p>
+                                @Html.DisplayFor(model => model.Event.Description)
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" data-tab-content="tab3" id="Users">
+
+            </div>
+            @{
+                string Status = isJoined(Model.Event.Id);
+            }
+            <div class="fixedjoin">
+                <button class="btn btn-primary btn-lg joinbtn" id="@Model.Event.Id" data-target="tab3">@Status</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="middle">
+        <p class="text-center texthover">
+            @Html.DisplayFor(Model => Model.Event.Description)
+        </p>
+    </div>
+</div><hr />
+
+<section class="posts" id="@Model.Event.Id"></section>
+
+
+
+@section scripts{
+    <script src="@Url.Content("~/Scripts/EventScripts.js")"></script>
+    <script>
+        var eventid = $(".posts").attr("id");
+        $.ajax
+            ({
+                url: '/Events/EventPosts/' + eventid,
+                contentType: 'application/html; charset=utf-8',
+                type: 'GET',
+                dataType: 'html',
+                success: function (result) {
+                    $('.posts').html(result);
+                },
+                error: function (xhr, status) {
+                    console.log("error");
+                }
+            });
+    </script>
+
+}

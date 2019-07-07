@@ -1,0 +1,143 @@
+﻿@model GpProject.ViewModels.UserEventViewModel
+
+
+
+@{
+    ViewBag.Title = "Index";
+
+    var classjoin = "display:none";
+
+    if(Model.Person.Id!=null)
+    {
+        classjoin = "display:block";
+    }
+
+}
+@functions
+{
+    public bool isOwner(int OwnerId)
+    {
+        if (OwnerId != Model.Person.Id)
+        {
+            return false;
+        }
+        return true;
+    }
+    public string isJoined(int Eventid)
+    {
+        //Get Event Id and Check if User is Joined
+        return (Model.UserJoin.IsUserJoined(Model.Person, Model.Event, Eventid)) ? "Join" : "UnJoin";
+    }
+
+}
+
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.DateCreated)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.DayStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.Active)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Event.Location)
+        </th>
+        <th>Owner</th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Events)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @*String.Format("{0:d MMMM yyyy}",item.DateCreated)*@
+            @(item.DateCreated == null ? "" : ((DateTime)item.DateCreated).ToString("d MMM yyyy"))
+            @*@Html.DisplayFor(modelItem => item.DateCreated)*@
+        </td>
+        <td>
+
+            @(item.DayStart == null ? "" : ((DateTime)item.DayStart).ToString("d MMM yyyy"))
+            @Html.DisplayFor(modelItem => item.TimeStart)
+
+            @*@(item.TimeStart == null ? "" : ((DateTime)item.DayStart).ToString("h m t"))*@
+            @*@Html.DisplayFor(modelItem => item.DayStart)*@
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Active)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Location)
+        </td>
+
+
+        <td>
+
+            @if (isOwner(item.OwnerId))
+        {
+            <span class="text-center">You</span>
+    }
+    else
+    {
+        @Html.DisplayFor(modelItem => item.Owner.FirstName)
+}
+        </td>
+
+
+
+        <td>
+
+            @if (!isOwner(item.OwnerId))
+        {
+            var Status = isJoined(item.Id);
+
+            //Status = "Fuck YOu";
+
+            <button id="@item.Id" class="btn-primary joinbtn" style="@classjoin">@Status</button>
+
+    }
+    else
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "link" })
+
+
+        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "link" })
+}
+
+            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "link" })
+        </td>
+    </tr>
+    }
+
+</table>
+@section scripts{
+    <script src="@Url.Content("~/Scripts/EventScripts.js")"></script>
+
+}
+<style>
+    .link {
+        padding: 3px;
+    }
+</style>

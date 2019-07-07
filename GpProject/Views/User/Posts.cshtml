@@ -1,0 +1,397 @@
+﻿
+@model GpProject.ViewModels.UserPostViewModel
+@{
+    //Layout = null;
+}
+<style>
+
+    section.posts > div, .text {
+        width: 100%;
+        margin: 20px auto;
+        background: #fff;
+        overflow: hidden;
+        padding: 20px;
+        border-radius: 3px;
+        box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+        min-height: 50px;
+    }
+
+        .text textarea {
+            min-width: 100px;
+            min-height: 100px;
+            border: none;
+            padding: 5px 10px;
+            font-family: arial;
+            resize: none;
+            outline: none;
+            border-bottom: 2px solid #0077CC;
+        }
+
+    section.posts {
+        background: #0c0d10;
+        padding-top: 1px;
+    }
+
+
+    .notpost {
+        background-color: rgb(45, 45, 44);
+        color: white;
+        text-align: center;
+        font-size: 2em;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        height: 10%;
+    }
+
+    section.posts div.post {
+        margin: 6px 0px;
+        margin-bottom: 30px;
+        padding: 2px 10px;
+        background-color: #ebebeb;
+    }
+
+    .post-body {
+        border-bottom: 5px solid red;
+        margin: 0px -10px;
+        padding: 0px 10px;
+        background-color: #ebebeb;
+    }
+
+    .post-header {
+        border-bottom: 2px solid #eee;
+        background: #f5f5f5;
+        padding-top: 10px;
+    }
+
+    .post-owner {
+        margin: 0px;
+        font-weight: bold;
+        min-width: 50px;
+    }
+
+    .post-date, .comment-date {
+        opacity: .7;
+    }
+
+    .post-link, .comment-link {
+        display: inline-block;
+        float: right;
+        padding: 0px 10px;
+    }
+
+    .post-content {
+        font-size: 2em;
+        width: 100%;
+        font-weight: normal;
+        padding: 10px 0px;
+        min-height: 40px;
+    }
+
+    .post-comments {
+        padding: 0 5px;
+    }
+
+    ul.comments {
+        list-style: none;
+        margin: 0px;
+        padding: 8px;
+        padding-top: 2px;
+    }
+
+        ul.comments li.comment {
+            margin: 5px 0px;
+            padding: 5px 10px;
+            background: #fffcfc;
+        }
+
+    .post-contnet span {
+        display: block;
+    }
+
+    .post-interact {
+        padding: 0px;
+        margin: 2px -8px;
+    }
+
+        .post-interact .form-group {
+            padding-left: 1px;
+            padding-right: 0px;
+        }
+
+            .post-interact .form-group button {
+                width: 100%;
+                border-radius: 0px;
+            }
+
+    .comment-onwer {
+        margin: 0px;
+        font-weight: 400;
+    }
+
+    .comment-date {
+        font-size: .9em;
+    }
+
+    .comment-header {
+        padding: 2px 0px;
+    }
+
+    .comment-content {
+        font-size: 1.2em;
+        padding: 5px 0px;
+    }
+
+    input.comment-input {
+        width: 100%;
+        display: inline-block;
+        max-width: 1000px;
+        margin: 0px;
+    }
+
+    .add_comment {
+        padding: 4px;
+        display: inline-block;
+    }
+
+    .comment-adding .form-group input {
+    }
+</style>
+
+<div class="text">
+    <textarea placeholder="What's On Your Mind" class="post-input"></textarea>
+    <input type="hidden" id="@Model.Post.Id" />
+    <input type="submit" value="Post" class="btn btn-danger add_post" data-profile-id="@Model.Person.Id" />
+
+</div>
+
+<section class="posts col-sm-12">
+    @if (Model.Posts.Count != 0)
+    {
+        foreach (var post in Model.Posts)
+        {
+            <div class="post" id="@post.Id">
+                <div class="post-body">
+                    <div class="row post-header">
+                        <div class="col-xs-8">
+                            <h4 class="post-owner" id="@post.Person.Id">@post.Person.FirstName @post.Person.LastName</h4>
+                            <span class="post-date">@post.DatePosted</span>
+                        </div>
+                        <div class="">
+                            @Html.ActionLink("Delete", "Delete", null, new { @class = "link post-link" })
+
+                            @Html.ActionLink("Edit", "Edit", null, new { @class = "link post-link" })
+                        </div>
+                    </div>
+                    <div class="row post-content">
+                        <div class="col-sm-12">
+                            <span class="">@post.Content</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row post-interact">
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control">Like</button>
+                    </div>
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control">Comment</button>
+                    </div>
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control">Share</button>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-sm-12 post-comments">
+                        <ul class="comments">
+                            @foreach (var comment in post.Comments)
+                            {
+                                <li class="comment" id="@comment.Id">
+                                    <div class="row comment-header">
+                                        <div class="col-sm-8">
+                                            <h5 class="comment-onwer" id="@comment.Person.Id">@comment.Person.FirstName @comment.Person.LastName</h5>
+                                            <span class="comment-date">@comment.DateCommented</span>
+                                        </div>
+                                        <div class="col-m-4">
+                                            @Html.ActionLink("Delete", "Delete", null, new { id = comment.Id }, new { @class = "link comment-link" })
+
+                                            @Html.ActionLink("Edit", "Edit", null, new { id = comment.Id }, new { @class = "link comment-link" })
+                                        </div>
+                                    </div>
+                                    <div class="row comment-content">
+                                        <div class="col-xs-12">
+                                            <span class="" id="content">
+                                               @comment.Content
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="row comment-holder">
+                    <div class="col-xs-8  col-sm-10 form-group">
+                        <input type="text" placeholder="Add Comment" class="comment-input form-control" />
+                    </div>
+                    <div class="col-xs-4 col-sm-2 form-group">
+                        <button class="btn btn-primary add_comment form-control" id="comment_id" data-commenter-id="@Model.Person.Id" >
+                            Comment
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        }
+    }
+</section>
+@section scripts{
+    <script src="@Url.Content("~/Scripts/moment.js")"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('.posts').on('click','.add_comment', function (e) {
+                //.$('.comment-input');
+                console.log(1)
+                const input = $(this).parent().siblings().children();
+                const commenterId = $(this).data('commenter-id');
+                console.log(input);
+                const comments = $(this).parent().parent().siblings('.row').next().children().children();
+                const postId = $(this).parent().parent().parent().attr('id');
+                let comment = input.val();
+                const commentObject={
+                    Content: comment,
+                    PersonId: commenterId,
+                    PostId:postId
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "AddComment",
+                    data: commentObject,
+                    success: function (comment) {
+                        date = moment(comment.DateCommented).format("M/D/Y h:mm:ss a");
+
+                        console.log(comment);
+                          let newcomment = ` <li class="comment" id="${comment.Id}">
+                            <div class="row comment-header">
+                                <div class="col-sm-8">
+                                    <h5 class="comment-onwer" id="${comment.Person.Id}">${comment.Person.FirstName} ${comment.Person.LastName == null ? '' :comment.Person.LastName}</h5>
+                                    <span class="comment-date">${date}</span>
+                                </div>
+                                <div class="col-sm-4">
+                                   
+                                    <a href="/User/Delete/${comment.Id}" class="link comment-link">Delete</a>
+
+                                    <a href="/User/Edit/${comment.Id}" class="link comment-link">Edit</a>
+                                </div>
+                            </div>
+                            <div class="row comment-content">
+                                <div class="col-xs-12">
+                                    <span class="" id="content">
+                                        ${comment.Content}
+                                    </span>
+
+                                </div>
+                            </div>
+                        </li>`;
+                    comments.append(newcomment);
+                    input.val('');
+                    }
+
+                });
+
+
+                e.preventDefault();
+            });
+
+            $(".add_post").on('click', function (e) {
+
+                const postContent = $('.post-input').val();
+                const btn = $(this);
+                const posterId = btn.data('profile-id');
+                if (postContent != '') {
+                    var Post = {
+                        Content: postContent,
+                        PersonId: posterId,
+
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: 'AddPost',
+                        data: Post,
+                        success: function (post) {
+                            console.log(post);
+                            console.log(typeof post.DatePosted);
+                            //var date = new Date(parseInt(post.DatePosted.substr(6)));
+                            //date.format("m/d/y h:MM:ss TT")
+                            //var date = new Date(post.DatePosted);
+                            date=moment(post.DatePosted).format("M/D/Y h:mm:ss a");
+                                 console.log(date);
+
+
+                        let newPost = `<div class="post" id="${post.Id}" >
+            <div class="post-body">
+                <div class="row post-header">
+                    <div class="col-xs-8">
+                        <h4 class="post-owner"  id="${post.Person.Id}">${post.Person.FirstName} ${post.Person.LastName}</h4>
+                        <span class="post-date">${date}</span>
+                    </div>
+                    <div class="">
+                        @Html.ActionLink("Delete", "Delete", null, new { @class = "link post-link" })
+
+                        @Html.ActionLink("Edit", "Edit", null, new { @class = "link post-link" })
+                    </div>
+                </div>
+                <div class="row post-content">
+                    <div class="col-sm-12">
+                        <span class="">${post.Content}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row post-interact">
+                <div class="col-xs-4 form-group">
+                    <button class="btn btn-default form-control">Like</button>
+                </div>
+                <div class="col-xs-4 form-group">
+                    <button class="btn btn-default form-control">Comment</button>
+                </div>
+                <div class="col-xs-4 form-group">
+                    <button class="btn btn-default form-control">Share</button>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-sm-12 post-comments">
+                    <ul class="comments">
+
+                    </ul>
+                </div>
+            </div>
+            <div class="row comment-holder">
+                <div class="col-xs-8  col-sm-10 form-group">
+                    <input type="text" placeholder="Add Comment" class="comment-input form-control" />
+                </div>
+                <div class="col-xs-4 col-sm-2 form-group">
+                    <button class="btn btn-primary add_comment form-control" id="comment_id" data-commenter-id="${post.Person.Id}">
+                        Comment
+                    </button>
+                </div>
+            </div>
+
+
+        </div>`;
+                            $('section.posts').prepend(newPost);
+
+                        }
+
+                    });
+                }
+                e.preventDefault();
+
+            });
+
+
+          });
+    </script>
+}
+

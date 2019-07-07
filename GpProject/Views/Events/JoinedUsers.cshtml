@@ -1,0 +1,17 @@
+﻿@model IEnumerable<GpProject.Models.Person>
+    <h3 class="users-header">Joined Users</h3>
+<div class="users">
+    <ul class="list">
+        @foreach (var item in Model)
+    {
+
+
+        <li class="user btn btn-primary">
+            @Html.ActionLink(item.FirstName, "Details", "User", new { id = item.Id }, new { @class = "btn btn-link user-link" })
+            @*<a class="btn btn-link user-link">@item.FirstName</a>*@
+        </li>
+
+
+}
+    </ul>
+</div>
