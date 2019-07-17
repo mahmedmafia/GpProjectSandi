@@ -50,15 +50,13 @@ namespace GpProject.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddPost(Post Post)
+        public JsonResult AddPost(HomePost Post)
         {
             db.Configuration.ProxyCreationEnabled = false;
             var post= Post;
-            post.EventId = 5;
             post.DatePosted = DateTime.Now;
             db.Posts.Add(post);
             db.SaveChanges();
-            //var person = 
             post.Person= db.People.FirstOrDefault(m => m.Id == Post.PersonId);
             return Json(post, JsonRequestBehavior.AllowGet);
         }
@@ -82,13 +80,13 @@ namespace GpProject.Controllers
             //View Details
             //View Friends
             //View His Posts  
-            var Posts = db.Posts.Include(p=>p.Person).Include(e=> e.Comments).OrderByDescending(h=>h.DatePosted).ToList();
+            var Posts = db.Posts.OfType<HomePost>().Where(t=>t.TypeId==PostType.Profile).Include(p=>p.Person).Include(e=> e.Comments).OrderByDescending(h=>h.DatePosted).ToList();
             var currentuser = CurrentUser();
 
             var viewmodel = new UserPostViewModel {
                 Person = currentuser,
                 Posts=Posts,
-                Post=new Post ()
+                Post=new HomePost ()
             };
             return View(viewmodel);
         }

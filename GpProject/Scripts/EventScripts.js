@@ -69,10 +69,10 @@
         }
     });
 
-    $("[type = submit]").click(function () {
-        var post = $("textarea").val();
-        $("<p class='post'>" + post + "</p>").appendTo("section");
-    });
+    //$("[type = submit]").click(function () {
+    //    var post = $("textarea").val();
+    //    $("<p class='post'>" + post + "</p>").appendTo("section");
+    //});
 
  
 

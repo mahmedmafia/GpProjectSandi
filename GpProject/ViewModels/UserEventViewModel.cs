@@ -21,10 +21,12 @@ namespace GpProject.ViewModels
     {
         public virtual Person Person { get; set; }
         public virtual Event Event { get; set; }
+        public virtual EventPost Post { get; set; }
+
     }
     public class EventPostsViewModel:UserEventViewModel
     {
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<EventPost> Posts { get; set; }
 
     }
 

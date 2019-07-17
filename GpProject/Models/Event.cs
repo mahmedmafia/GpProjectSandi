@@ -32,7 +32,7 @@ namespace GpProject.Models
         public int OwnerId { get; set; }
         public Person Owner { get; set; }
         [ForeignKey("EventId")]
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<EventPost> Posts { get; set; }
 
     }
 }

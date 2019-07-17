@@ -8,11 +8,11 @@ namespace GpProject.ViewModels
 {
     public class UsersPostsViewModel
     {
-        public virtual Post Post { get; set; }
+        public virtual HomePost Post { get; set; }
     }
     public class UserPostViewModel:UsersPostsViewModel
     {
         public virtual Person Person { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<HomePost> Posts { get; set; }
     }
 }

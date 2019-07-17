@@ -156,7 +156,7 @@ namespace GpProject.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Event currentevent = db.Events.Include(m=>m.Posts).Include(p=>p.Owner).FirstOrDefault(m=>m.Id==id);
-            var eventposts = db.Posts.Include(c => c.Comments).Include(p=>p.Person).Where(c=>c.EventId==currentevent.Id).ToList();
+            var eventposts = db.Posts.OfType<EventPost>().Include(c => c.Comments).Include(p=>p.Person).Where(c=>c.EventId==currentevent.Id).ToList();
             var eventpostsviewmodel = new EventPostsViewModel {
                 Posts = eventposts,
                 Event = currentevent,
@@ -165,6 +165,7 @@ namespace GpProject.Controllers
                 {
                     JoinedPerson = currentuser
                 },
+                Post=new EventPost()
             };
             if (currentevent== null)
             {
@@ -185,25 +186,37 @@ namespace GpProject.Controllers
         {
             var currentuser = CurrentUser();
             Event currentevent = db.Events.Include(m => m.Posts).Include(p => p.Owner).FirstOrDefault(m => m.Id == id);
-            //var eventposts = db.Posts.Include(c => c.Comments).Include(p => p.Person).Where(c => c.EventId == currentevent.Id).OrderByDescending(m=>m.DatePosted).ToList();
-            var eventposts = new List<Post>
-           {
-               new Post{DatePosted=new DateTime(2015,6,21),Person=currentuser,Content="its my birthday bitches 2015",EventId=5},
+            // //var eventposts = db.Posts.Include(c => c.Comments).Include(p => p.Person).Where(c => c.EventId == currentevent.Id).OrderByDescending(m=>m.DatePosted).ToList();
+            // var eventposts = new List<Post>
+            //{
+            //    new Post{DatePosted=new DateTime(2015,6,21),Person=currentuser,Content="its my birthday bitches 2015",EventId=5},
 
-               new Post{DatePosted=new DateTime(2016,6,21),Person=currentuser,Content="its my birthday bitches2016",EventId=5},
-               new Post{DatePosted=new DateTime(2017,6,21),Person=currentuser,Content="its my birthday bitches2017",EventId=5},
-               new Post{DatePosted=new DateTime(2018,6,21),Person=currentuser,Content="its my birthday bitches2018",EventId=7},
-               new Post{DatePosted=new DateTime(2019,6,21),Person=currentuser,Content="its my birthday bitches 2019",EventId=7},
+            //    new Post{DatePosted=new DateTime(2016,6,21),Person=currentuser,Content="its my birthday bitches2016",EventId=5},
+            //    new Post{DatePosted=new DateTime(2017,6,21),Person=currentuser,Content="its my birthday bitches2017",EventId=5},
+            //    new Post{DatePosted=new DateTime(2018,6,21),Person=currentuser,Content="its my birthday bitches2018",EventId=7},
+            //    new Post{DatePosted=new DateTime(2019,6,21),Person=currentuser,Content="its my birthday bitches 2019",EventId=7},
 
-           };
-            eventposts=eventposts.Where(c => c.EventId == currentevent.Id).OrderByDescending(m=>m.DatePosted).ToList();
+            //};
+            var eventposts = db.Posts.OfType<EventPost>().Where(c => c.EventId == currentevent.Id).OrderByDescending(m => m.DatePosted).ToList();
             var eventpostsviewmodel = new EventPostsViewModel
             {
                 Posts = eventposts,
+                Person = currentuser,
+                Post = new EventPost()
+
             };
             return PartialView("EventPosts", eventpostsviewmodel);
         }
-
+        public JsonResult AddPost(EventPost Post)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            var post = Post;
+            post.DatePosted = DateTime.Now;
+            db.Posts.Add(post);
+            db.SaveChanges();
+            post.Person = db.People.FirstOrDefault(m => m.Id == Post.PersonId);
+            return Json(post, JsonRequestBehavior.AllowGet);
+        }
         // GET: Events/Create
         public ActionResult Create()
         {
