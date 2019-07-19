@@ -197,7 +197,7 @@ namespace GpProject.Controllers
             //    new Post{DatePosted=new DateTime(2019,6,21),Person=currentuser,Content="its my birthday bitches 2019",EventId=7},
 
             //};
-            var eventposts = db.Posts.OfType<EventPost>().Where(c => c.EventId == currentevent.Id).OrderByDescending(m => m.DatePosted).ToList();
+            var eventposts = db.Posts.OfType<EventPost>().Include(p=>p.Person).Where(c => c.EventId == currentevent.Id).OrderByDescending(m => m.DatePosted).ToList();
             var eventpostsviewmodel = new EventPostsViewModel
             {
                 Posts = eventposts,

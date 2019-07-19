@@ -28,14 +28,14 @@
                             <span class="post-date">@post.DatePosted</span>
                         </div>
                         <div class="">
-                            @Html.ActionLink("Delete", "Delete", null, new { @class = "link post-link" })
+                            <button class="link post-delete post-link btn btn-link">Delete</button>
 
-                            @Html.ActionLink("Edit", "Edit", null, new { @class = "link post-link" })
+                            <buttton class="link post-edit post-link btn btn-link">Edit</buttton>
                         </div>
                     </div>
                     <div class="row post-content">
                         <div class="col-sm-12">
-                            <span class="">@post.Content</span>
+                            <span id="content">@post.Content</span>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                         <button class="btn btn-default form-control">Like</button>
                     </div>
                     <div class="col-xs-4 form-group">
-                        <button class="btn btn-default form-control">Comment</button>
+                        <button class="btn btn-default form-control" id="showComments">Comment</button>
                     </div>
                     <div class="col-xs-4 form-group">
                         <button class="btn btn-default form-control">Share</button>
@@ -62,16 +62,14 @@
                                             <span class="comment-date">@comment.DateCommented</span>
                                         </div>
                                         <div class="col-m-4">
-                                            @Html.ActionLink("Delete", "Delete", null, new { id = comment.Id }, new { @class = "link comment-link" })
+                                            <button id="@comment.Id" class="link comment-link comment-delete  delete-link btn btn-link">Delete</button>
 
-                                            @Html.ActionLink("Edit", "Edit", null, new { id = comment.Id }, new { @class = "link comment-link" })
+                                            <button id="@comment.Id" class="link comment-link comment-edit edit-link btn btn-link">Edit</button>
                                         </div>
                                     </div>
                                     <div class="row comment-content">
                                         <div class="col-xs-12">
-                                            <span class="" id="content">
-                                                @comment.Content
-                                            </span>
+                                            <span class="" id="content">@comment.Content</span>
 
                                         </div>
                                     </div>
@@ -96,6 +94,28 @@
         }
     }
 </section>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want To delete
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger delbtn" id="selectedId">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts{
 
     <script src="@Url.Content("~/Scripts/moment.js")"></script>

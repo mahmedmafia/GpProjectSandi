@@ -7,111 +7,100 @@
 
 
 @*<div class="text">
-    <textarea placeholder="What's On Your Mind" class="post-input"></textarea>
-    <input type="hidden" id="@Model.Post.Id" />
-    <input type="submit" value="Post" class="btn btn-danger add_post" data-profile-id="@Model.Person.Id" data-place-id="@Model.Post.TypeId" />
+        <textarea placeholder="What's On Your Mind" class="post-input"></textarea>
+        <input type="hidden" id="@Model.Post.Id" />
+        <input type="submit" value="Post" class="btn btn-danger add_post" data-profile-id="@Model.Person.Id" data-place-id="@Model.Post.TypeId" />
 
-</div>*@
+    </div>*@
 
 @section scripts{
-<script>
-    $('.text').on('click', '.add_post', function (e) {
-        console.log('gh');
+    <script>
 
-    });
 
-</script>
- }
-    <section class="posts col-sm-12">
+    </script>
+}
 
-        @if (Model.Posts.Count != 0)
+        
+    @if (Model.Posts.Count != 0)
+    {
+        foreach (var post in Model.Posts)
         {
-            foreach (var post in Model.Posts)
-            {
-                <div class="post" id="@post.Id">
-                    <div class="post-body">
-                        <div class="row post-header">
-                            <div class="col-xs-8">
-                                <h4 class="post-owner" id="@post.Person.Id">@post.Person.FirstName @post.Person.LastName</h4>
-                                <span class="post-date">@post.DatePosted</span>
-                            </div>
-                            <div class="">
-                                @Html.ActionLink("Delete", "Delete", null, new { @class = "link post-link" })
-
-                                @Html.ActionLink("Edit", "Edit", null, new { @class = "link post-link" })
-                            </div>
+            <div class="post" id="@post.Id">
+                <div class="post-body">
+                    <div class="row post-header">
+                        <div class="col-xs-8">
+                            <h4 class="post-owner" id="@post.Person.Id">@post.Person.FirstName @post.Person.LastName</h4>
+                            <span class="post-date">@post.DatePosted</span>
                         </div>
-                        <div class="row post-content">
-                            <div class="col-sm-12">
-                                <span class="">@post.Content</span>
-                            </div>
+                        <div class="">
+                            <button class="link post-delete post-link btn btn-link">Delete</button>
+
+                            <buttton class="link post-edit post-link btn btn-link">Edit</buttton>
                         </div>
                     </div>
-                    <div class="row post-interact">
-                        <div class="col-xs-4 form-group">
-                            <button class="btn btn-default form-control">Like</button>
-                        </div>
-                        <div class="col-xs-4 form-group">
-                            <button class="btn btn-default form-control">Comment</button>
-                        </div>
-                        <div class="col-xs-4 form-group">
-                            <button class="btn btn-default form-control">Share</button>
+                    <div class="row post-content">
+                        <div class="col-sm-12">
+                            <span id="content">@post.Content</span>
                         </div>
                     </div>
-                    <div class="row ">
-                        <div class="col-sm-12 post-comments">
-                            <ul class="comments">
-                                @foreach (var comment in post.Comments)
-                                {
-                                    <li class="comment" id="@comment.Id">
-                                        <div class="row comment-header">
-                                            <div class="col-sm-8">
-                                                <h5 class="comment-onwer" id="@comment.Person.Id">@comment.Person.FirstName @comment.Person.LastName</h5>
-                                                <span class="comment-date">@comment.DateCommented</span>
-                                            </div>
-                                            <div class="col-m-4">
-                                                @Html.ActionLink("Delete", "Delete", null, new { id = comment.Id }, new { @class = "link comment-link" })
-
-                                                @Html.ActionLink("Edit", "Edit", null, new { id = comment.Id }, new { @class = "link comment-link" })
-                                            </div>
-                                        </div>
-                                        <div class="row comment-content">
-                                            <div class="col-xs-12">
-                                                <span class="" id="content">
-                                                    @comment.Content
-                                                </span>
-
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row comment-holder">
-                        <div class="col-xs-8  col-sm-10 form-group">
-                            <input type="text" placeholder="Add Comment" class="comment-input form-control" />
-                        </div>
-                        <div class="col-xs-4 col-sm-2 form-group">
-                            <button class="btn btn-primary add_comment form-control" id="comment_id" data-commenter-id="@Model.Person.Id">
-                                Comment
-                            </button>
-                        </div>
-                    </div>
-
-
                 </div>
-            }
-            <div class=" post notpost">
-                <p>No More Posts</p>
-            </div>
-        }
-        else
-        {
-            <div class="post notpost ">
-                <p>No Posts Yet Be The First One To Add Post</p>
-            </div>
-        }
-    </section>
+                <div class="row post-interact">
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control">Like</button>
+                    </div>
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control" id="showComments">Comment</button>
+                    </div>
+                    <div class="col-xs-4 form-group">
+                        <button class="btn btn-default form-control">Share</button>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-sm-12 post-comments">
+                        <ul class="comments">
+                            @foreach (var comment in post.Comments)
+                            {
+                                <li class="comment" id="@comment.Id">
+                                    <div class="row comment-header">
+                                        <div class="col-sm-8">
+                                            <h5 class="comment-onwer" id="@comment.Person.Id">@comment.Person.FirstName @comment.Person.LastName</h5>
+                                            <span class="comment-date">@comment.DateCommented</span>
+                                        </div>
+                                        <div class="col-m-4">
+                                            <button id="@comment.Id" class="link comment-link comment-delete  delete-link btn btn-link" >Delete</button>
+
+                                            <button id="@comment.Id" class="link comment-link comment-edit edit-link btn btn-link" >Edit</button>
+                                        </div>
+                                    </div>
+                                    <div class="row comment-content">
+                                        <div class="col-xs-12">
+                                            <span class="" id="content">@comment.Content</span>
+
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="row comment-holder">
+                    <div class="col-xs-8  col-sm-10 form-group">
+                        <input type="text" placeholder="Add Comment" class="comment-input form-control" />
+                    </div>
+                    <div class="col-xs-4 col-sm-2 form-group">
+                        <button class="btn btn-primary add_comment form-control" id="comment_id" data-commenter-id="@Model.Person.Id">
+                            Comment
+                        </button>
+                    </div>
+                </div>
 
 
+            </div>
+        }
+    }
+
+
+
+
+
+       

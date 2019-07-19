@@ -48,7 +48,9 @@ namespace GpProject.Controllers
          
             return View();
         }
+        
 
+        //Adding Post To Home
         [HttpPost]
         public JsonResult AddPost(HomePost Post)
         {
@@ -61,6 +63,8 @@ namespace GpProject.Controllers
             return Json(post, JsonRequestBehavior.AllowGet);
         }
 
+
+        //Adding Comment To Home
         [HttpPost]
         public JsonResult AddComment(Comment comment)
         {
@@ -73,6 +77,63 @@ namespace GpProject.Controllers
             return Json(Comment, JsonRequestBehavior.AllowGet);
         }
 
+
+
+        [HttpPost]
+        public ActionResult DeleteComment(int id)
+        {
+            var comment = db.Comments.FirstOrDefault(com => com.Id == id);
+            if (comment != null)
+            {
+                db.Comments.Remove(comment);
+                db.SaveChanges();
+            }
+            return new EmptyResult();
+        }
+
+        [HttpPost]
+        public ActionResult DeletePost(int id)
+        {
+
+            var comments = db.Comments.Where(com => com.PostId == id).ToList();
+            if (comments.Count != 0)
+            {
+                foreach (var comment in comments)
+                {
+                    db.Comments.Remove(comment);
+
+                }
+            }
+
+            var post = db.Posts.FirstOrDefault(pos => pos.Id == id);
+            if (post != null)
+            {
+                db.Posts.Remove(post);
+                db.SaveChanges();
+            }
+            return new EmptyResult();
+        }
+
+        public ActionResult EditPost(int id,string val)
+        {
+            var post = db.Posts.FirstOrDefault(pos => pos.Id == id);
+            post.Content = val;
+            db.Entry(post).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return new EmptyResult();
+        }
+        public ActionResult EditComment(int id, string val)
+        {
+            var comment = db.Comments.FirstOrDefault(pos => pos.Id == id);
+            comment.Content = val;
+            db.Entry(comment).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return new EmptyResult();
+        }
+
+        //The main Home Page
         [Authorize]
         public ActionResult Posts()
         {
